@@ -1,0 +1,148 @@
+@extends('layouts.app')
+
+@section('title', 'Edit ' . $course->kode_mk)
+
+@section('content')
+<div style="max-width: 760px; margin: 0 auto;">
+    <div style="margin-bottom: 1.25rem;">
+        <a href="{{ route('courses.show', $course->id) }}" class="btn btn-secondary btn-sm">
+            Kembali ke Detail Mata Kuliah
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h1 class="card-title">Edit Mata Kuliah</h1>
+                <p class="card-subtitle">Perbarui data mata kuliah <strong>{{ $course->nama_mk }}</strong> ({{ $course->kode_mk }}).</p>
+            </div>
+            <span class="code-pill">{{ $course->kode_mk }}</span>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ route('courses.update', $course->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.25rem;">
+                    <!-- TODO 7: Buat input untuk memperbarui data mata kuliah. -->
+                {{-- Petunjuk:
+                - Buat field kode MK, nama MK, SKS, dan semester.
+                - Tampilkan nilai data yang sedang diedit dari variabel $course.
+                - Gunakan old() agar isian tetap muncul jika validasi gagal.
+                - Tampilkan pesan error validasi dengan directive Blade.
+                - Pilih jenis input yang sesuai untuk tiap field. --}}
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <!-- Kode Mata Kuliah -->
+                    <div class="form-group">
+                        <label for="kode" class="form-label">
+                            Kode Mata Kuliah <span class="required-indicator">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            name="kode" 
+                            id="kode" 
+                            class="form-control @error('kode') is-invalid @enderror" 
+                            value="{{ old('kode', $course->kode) }}" 
+                            required
+                        >
+                        @error('kode')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Nama Mata Kuliah -->
+                    <div class="form-group">
+                        <label for="nama" class="form-label">
+                            Nama Mata Kuliah <span class="required-indicator">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            name="nama" 
+                            id="nama" 
+                            class="form-control @error('nama') is-invalid @enderror" 
+                            value="{{ old('nama', $course->nama) }}" 
+                            required
+                        >
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <!-- Jumlah SKS -->
+                    <div class="form-group">
+                        <label for="sks" class="form-label">
+                            Jumlah SKS <span class="required-indicator">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            name="sks" 
+                            id="sks" 
+                            min="1" 
+                            max="6" 
+                            class="form-control @error('sks') is-invalid @enderror" 
+                            value="{{ old('sks', $course->sks) }}" 
+                            required
+                        >
+                        @error('sks')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Semester -->
+                    <div class="form-group">
+                        <label for="semester" class="form-label">
+                            Semester Perkuliahan <span class="required-indicator">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            name="semester" 
+                            id="semester" 
+                            class="form-control @error('semester') is-invalid @enderror" 
+                            value="{{ old('semester', $course->semester) }}" 
+                            required
+                        >
+                        @error('semester')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Dosen Pengampu -->
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label">
+                        Dosen Pengampu Utama
+                    </label>
+                    <div style="padding: 0.625rem 0.875rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 6px; font-size: 0.875rem; color: var(--slate-800); font-weight: 600;">
+                        {{ $course->dosen->name ?? Auth::user()->name }} ({{ $course->dosen->nomor_induk ?? Auth::user()->nomor_induk ?: '-' }})
+                    </div>
+                </div>
+
+                <!-- Deskripsi / Silabus -->
+                <div class="form-group">
+                    <label for="deskripsi" class="form-label">
+                        Silabus / Deskripsi Mata Kuliah
+                    </label>
+                    <textarea 
+                        name="deskripsi" 
+                        id="deskripsi" 
+                        rows="4" 
+                        class="form-control @error('deskripsi') is-invalid @enderror"
+                    >{{ old('deskripsi', $course->deskripsi) }}</textarea>
+                    @error('deskripsi')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--slate-200);">
+                    <a href="{{ route('courses.show', $course->id) }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
